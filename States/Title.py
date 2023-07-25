@@ -1,12 +1,18 @@
 from States.State import State
+from States.MainGame import MainGame
+from Button import Button
 
 class Title(State):
     def __init__(self, game):
-        State.__init__(self,game)
-        
-    def update(self, dt):
-        pass
-    
+        State.__init__(self, game)
+
+    def update(self, dt, actions):
+        if actions["start"]:
+            new_state = MainGame(self.game)
+            new_state.enter_state()        
+
+
     def render(self, display):
         display.fill(("#FFF6DE"))
-        self.game.draw_text(display, "Poke Egg Guesser", (0,0,0), self.game.GAME_W/2, self.game.GAME_H/2)
+        self.game.draw_text(display, "Poke Egg Guesser",
+                            "black", self.game.GAME_W/2, self.game.GAME_H/2)
