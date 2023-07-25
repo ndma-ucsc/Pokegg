@@ -4,6 +4,8 @@ import sys
 import pygame
 import pygame_gui
 
+from States.Title import Title
+
 
 class Game():
     def __init__(self):
@@ -16,6 +18,7 @@ class Game():
         self.dt, self.prev_time = 0, 0
         self.state_stack = []
         self.load_assets()
+        self.load_states()
         
     def game_loop(self):
         while self.playing:
@@ -30,9 +33,10 @@ class Game():
                 self.playing, self.running = False, False
 
     def update(self):
-        pass
+        self.state_stack[-1].update(self.dt)
 
     def render(self):
+        self.state_stack[-1].render(self.game_canvas)
         self.screen.blit(pygame.transform.scale(
             self.game_canvas, (self.SCREEN_W, self.SCREEN_H)), (0, 0))
         pygame.display.flip()
@@ -51,6 +55,9 @@ class Game():
     def load_assets(self):
         self.assets_dir = os.path.join("assets")
         
+    def load_states(self):
+        self.title_screen = Title(self)
+        self.state_stack.append(self.title_screen)
         
         
 if __name__ == "__main__":
