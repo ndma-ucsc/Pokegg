@@ -1,4 +1,10 @@
 class GameStateManager:
-    def __init__(self):
-        pass
-        
+    def __init__(self, currentState):
+        self.currentState = currentState
+
+    def get_state(self):
+        return self.currentState
+
+    def set_state(self, state):
+        self.currentState = state
+        print(f"Switched State: {self.currentState}")
