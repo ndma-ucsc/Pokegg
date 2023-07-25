@@ -10,7 +10,7 @@ class State():
         pass
 
     def enter_state(self):
-        if len(self.game.stae_stack) > 1:
+        if len(self.game.state_stack) > 1:
             self.prev_state = self.game.state_stack[-1]
         self.game.state_stack.append(self)
 

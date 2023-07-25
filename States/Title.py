@@ -1,6 +1,6 @@
 from States.State import State
 from States.MainGame import MainGame
-from Button import Button
+
 
 class Title(State):
     def __init__(self, game):
@@ -9,8 +9,8 @@ class Title(State):
     def update(self, dt, actions):
         if actions["start"]:
             new_state = MainGame(self.game)
-            new_state.enter_state()        
-
+            new_state.enter_state()
+        self.game.reset_keys()
 
     def render(self, display):
         display.fill(("#FFF6DE"))

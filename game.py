@@ -5,14 +5,12 @@ import pygame
 import pygame_gui
 
 from States.Title import Title
-from Button import Button
-
 
 class Game():
     def __init__(self):
         pygame.init()
         pygame.display.set_caption("Poke Egg Guesser")
-        self.GAME_W, self.GAME_H = 1600, 900
+        self.GAME_W, self.GAME_H = 1280, 720
         self.SCREEN_W, self.SCREEN_H = 1600, 900
         self.game_canvas = pygame.Surface((self.GAME_W, self.GAME_H))
         self.screen = pygame.display.set_mode((self.SCREEN_W, self.SCREEN_H))
@@ -34,14 +32,13 @@ class Game():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.playing, self.running = False, False
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                # if startButton.enabled == True:
-                    # self.actions["start"] = True:
-                pass
-            if event.type == pygame.MOUSEBUTTONUP:
-                # if startButton.enabled == False:
-                    # self.actions["start"] = False:
-                pass
+            
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    self.actions["start"] = True
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_RETURN:
+                    self.actions["start"] = False
 
     def update(self):
         self.state_stack[-1].update(self.dt, self.actions)
@@ -74,6 +71,9 @@ class Game():
         self.title_screen = Title(self)
         self.state_stack.append(self.title_screen)
         
+    def reset_keys(self):
+        for action in self.actions:
+            self.actions[action] = False
         
 if __name__ == "__main__":
     game = Game()

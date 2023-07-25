@@ -9,7 +9,7 @@ class MainGame(State):
         State.__init__(self, game)
         self.sprites = {}
         for sprite in os.listdir(os.path.join(self.game.sprite_dir)):
-            self.sprites[sprite] = pygame.image.load(sprite)
+            self.sprites[sprite] = pygame.image.load(os.path.join(self.game.sprite_dir, sprite))
 
     def update(self, dt, actions):
         pass
