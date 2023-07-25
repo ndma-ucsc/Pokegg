@@ -54,6 +54,9 @@ class Game():
         
     def load_assets(self):
         self.assets_dir = os.path.join("assets")
+        self.sprite_dir = os.path.join(self.assets_dir, "MainSprite")
+        self.font_dir = os.path.join(self.assets_dir, "Font")
+        self.font = pygame.font.Font(os.path.join(self.font_dir, "PKMN RBYGSC.ttf"), 64)
         
     def load_states(self):
         self.title_screen = Title(self)
