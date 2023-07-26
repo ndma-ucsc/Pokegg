@@ -4,7 +4,7 @@ from States.MainGame import MainGame
 
 class Title(State):
     def __init__(self, game):
-        print("Title init")
+        # print("Title init")
         State.__init__(self, game)
 
     def update(self, dt, actions):

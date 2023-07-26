@@ -13,7 +13,7 @@ class Game():
         pygame.init()
         pygame.display.set_caption("Poké Egg Guesser")
         self.GAME_W, self.GAME_H = 1280, 720
-        self.SCREEN_W, self.SCREEN_H = 1600, 900
+        self.SCREEN_W, self.SCREEN_H = 1280, 720
         self.game_canvas = pygame.Surface((self.GAME_W, self.GAME_H))
         self.screen = pygame.display.set_mode((self.SCREEN_W, self.SCREEN_H))
         self.UIManager = pygame_gui.UIManager((self.SCREEN_W, self.SCREEN_H))

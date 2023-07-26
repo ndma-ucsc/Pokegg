@@ -8,7 +8,7 @@ from States.State import State
 class MainGame(State):
 
     def __init__(self, game):
-        print("MainGame init")
+        # print("MainGame init")
         State.__init__(self, game)
         self.sprites = {}
         for sprite in os.listdir(os.path.join(self.game.sprite_dir)):
