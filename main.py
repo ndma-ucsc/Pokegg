@@ -89,11 +89,7 @@ class Game():
         for action in self.actions:
             self.actions[action] = False
 
-def main():
-    game = Game()
-    while game.running:
-        asyncio.run(game.game_loop())
-    pygame.quit()
-
-if __name__ == "__main__":
-    main()
+game = Game()
+while game.running:
+    asyncio.run(game.game_loop())
+pygame.quit()
