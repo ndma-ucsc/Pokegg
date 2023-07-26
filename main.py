@@ -18,7 +18,7 @@ class Game():
         self.screen = pygame.display.set_mode((self.SCREEN_W, self.SCREEN_H))
         self.UIManager = pygame_gui.UIManager((self.SCREEN_W, self.SCREEN_H))
         self.running, self.playing = True, True
-        self.actions = {"start": False, "text_entry": "a"}
+        self.actions = {"start": False, "text_entry": "a", "skipping": False, "next": False, "enter": False}
         self.dt, self.prev_time = 0, 0
         self.state_stack = []
         self.load_assets()
@@ -39,12 +39,20 @@ class Game():
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
-                    self.actions["start"] = True
+                    self.actions["enter"] = True
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_RETURN:
-                    self.actions["start"] = False
+                    self.actions["enter"] = False
+                    
+                    
+            if event.type == pygame_gui.UI_BUTTON_PRESSED and event.ui_object_id == "start_button":
+                self.actions["start"] = True
             if event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED and event.ui_object_id == "input_field":
                 self.actions["text_entry"] = event.text
+            if event.type == pygame_gui.UI_BUTTON_PRESSED and event.ui_object_id == "skip_button":
+                self.actions["skipping"] = True
+            if event.type == pygame_gui.UI_BUTTON_PRESSED and event.ui_object_id == "next_button":
+                self.actions["next"] = True
 
             self.UIManager.process_events(event)
 
@@ -58,6 +66,7 @@ class Game():
             self.game_canvas, (self.SCREEN_W, self.SCREEN_H)), (0, 0))
         self.UIManager.draw_ui(self.screen)
         pygame.display.flip()
+        pygame.display.update()
 
     def get_dt(self):
         now = time.time()
@@ -80,6 +89,9 @@ class Game():
             os.path.join(self.font_dir, "PKMN RBYGSC.ttf"), 32)
         self.normal_font = pygame.font.Font(
             os.path.join(self.font_dir, "PKMN RBYGSC.ttf"), 16)
+        
+        self.themes_dir = os.path.join(self.assets_dir, "Themes")
+        self.UIManager.get_theme().load_theme(os.path.join(self.themes_dir, "button.json"))
 
     def load_states(self):
         self.title_screen = Title(self)
@@ -90,6 +102,5 @@ class Game():
             self.actions[action] = False
 
 game = Game()
-while game.running:
-    asyncio.run(game.game_loop())
+asyncio.run(game.game_loop())
 pygame.quit()
