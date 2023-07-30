@@ -13,7 +13,7 @@
         "font":
         {
             "name": "PKMN RBYGSC.ttf",
-            "size": "32",
+            "size": "16",
             "regular_resource":{
                 "package": "assets.Font",
                 "resource": "PKMN RBYGSC.ttf"

@@ -1,7 +1,8 @@
 import pygame
 import pygame_gui
 from States.State import State
-from States.MainGame import MainGame
+from States.EggGame import EggGame
+from States.CensormonSettings import CensormonSettings
 
 
 class Title(State):
@@ -9,19 +10,36 @@ class Title(State):
         # print("Title init")
         State.__init__(self, game)
 
-        # Create Start Button
-        self.start_b_w, self.start_b_h = 200, 50
-        self.start_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(
-            (self.game.SCREEN_W/2 - self.start_b_w/2, 2 * self.game.SCREEN_H/3), (self.start_b_w, self.start_b_h)), manager=self.game.UIManager, object_id="start_button", text="Start")
+        # Create start buttons
+        self.egg_start_btn_w, self.egg_start_btn_h = 310, 50
+        self.censor_start_btn_w, self.censor_start_btn_h = 310, 50
+        
+        self.egg_start_btn = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(
+            (self.game.SCREEN_W/2 - self.egg_start_btn_w/2, 2 * self.game.SCREEN_H/3), (self.egg_start_btn_w, self.egg_start_btn_h)), manager=self.game.UIManager, object_id="egg_start_btn", text="Egg Guesser")
+        self.censor_start_btn = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(
+            (self.game.SCREEN_W/2 - self.censor_start_btn_w/2, 2.3 * self.game.SCREEN_H/3), (self.censor_start_btn_w, self.censor_start_btn_h)), manager=self.game.UIManager, object_id="censor_start_btn", text="Censormon")
 
     def update(self, dt, actions):
-        # On Start button press
-        if actions["start"]:
-            self.start_button.hide()
+        
+        # On Button
+        if actions["egg_start"] or actions["censor_start"]:
+            self.egg_start_btn.hide()
+            self.censor_start_btn.hide()
 
-            # State transition
-            new_state = MainGame(self.game)
-            new_state.enter_state()
+            # Start Egg Game
+            if actions["egg_start"]:
+                # Egg Game transition
+                actions["egg_start"] = False
+                new_state = EggGame(self.game)
+                new_state.enter_state()
+            
+            # Start Censormon
+            elif actions["censor_start"]:
+                # Censor Game transition
+                actions["censor_start"] = False
+                new_state = CensormonSettings(self.game)
+                new_state.enter_state()
+
         self.game.reset_keys()
 
     def render(self, display):

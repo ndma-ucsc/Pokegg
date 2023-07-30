@@ -1,8 +1,6 @@
 {
-    "button":
-    {
-        "colours":
-        {
+    "button": {
+        "colours": {
             "normal_bg": "#FFFFFF",
             "hovered_bg": "#35393e",
             "disabled_bg": "#25292e",
@@ -10,17 +8,15 @@
             "active_bg": "#193784",
             "normal_text": "#000000"
         },
-        "font":
-        {
-            "name": "PKMN RBYGSC.ttf",
+        "font": {
+            "name": "/assets/Font/PKMN RBYGSC.ttf",
             "size": "32",
-            "regular_resource":{
+            "regular_resource": {
                 "package": "assets.Font",
                 "resource": "PKMN RBYGSC.ttf"
             }
         },
-        "misc":
-        {
+        "misc": {
             "border_width": "1",
             "shadow_width": "1",
             "tool_tip_delay": "1.0",
@@ -30,8 +26,7 @@
             "text_vert_alignment_padding": "5",
             "text_shadow_size": "1",
             "text_shadow_offset": "0,0",
-            "state_transitions":
-            {
+            "state_transitions": {
                 "normal_hovered": "0.5",
                 "hovered_normal": "0.5"
             }
