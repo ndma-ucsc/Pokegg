@@ -1,5 +1,6 @@
 import os
 import re
+from PIL import Image
 import random
 import pygame
 import pygame_gui
@@ -8,18 +9,22 @@ from States.State import State
 
 class CensormonGame(State):
 
-    def __init__(self, game):
+    def __init__(self, game, diff):
         # print("EggGame init")
         State.__init__(self, game)
-
-        # Load sprites to dict
-        self.sprites = {}
-        for sprite in os.listdir(self.game.egg_sprite_dir):
-            if "_" in os.path.join(self.game.egg_sprite_dir, sprite):
-                continue
-            self.sprites[re.sub(r'\W+', '', sprite)] = pygame.image.load(
-                os.path.join(self.game.egg_sprite_dir, sprite))
+    
+        
         # print(self.sprites.keys())
+        
+        self.sprites = {}
+        self.correct_sprite = self.game.pkmn_sprites
+        diffs = [16, 10, 8]
+        for sprite in os.listdir(self.game.pkmn_sprite_dir):
+            # self.pkmn_sprites["".join(sprite.split())] = pygame.image.load(
+            #     os.path.join(self.game.pkmn_sprite_dir, sprite))
+            sprite_img = Image.open(os.path.join(self.game.pkmn_sprite_dir, sprite))
+            pixelate_img = sprite_img.resize((diffs[diff], diffs[diff]), resample=Image.Resampling.BILINEAR).resize(sprite_img.size, Image.Resampling.NEAREST).save("./assets/temp/temp.png")
+            self.sprites["".join(sprite.split())] = pygame.transform.scale(pygame.image.load("./assets/temp/temp.png"), (200, 200))
 
         # Text field
         self.input_w, self.input_h = 500, 50
@@ -48,10 +53,13 @@ class CensormonGame(State):
         self.round = 0
 
         self.prompt_text = "Who's that Pokémon?"
+        self.default_prompt_text = "Who's that Pokémon?"
+        
+        self.reveal = False
 
     def update(self, dt, actions):
 
-        default_prompt_text = "Who's that Pokémon?"
+        self.default_prompt_text = "Who's that Pokémon?"
 
         # Text field catch
         if actions["text_entry"]:
@@ -59,15 +67,16 @@ class CensormonGame(State):
             self.next_button.show()
             self.input_field.clear()
             self.input_field.disable()
+            self.reveal = True
             # Correct answer
-            if actions["text_entry"].lower() == self.current_prompt.rstrip(".png").lower():
+            if "".join(actions["text_entry"].lower().split()) == self.current_prompt.replace(".png", "").lower():
 
                 self.prompt_text = f"Correct!"
 
                 if actions["next"] or actions["enter"]:
                     self.next_button.hide()
                     self.skip_button.show()
-                    self.prompt_text = default_prompt_text
+                    self.prompt_text = self.default_prompt_text
 
                     self.points += 1
                     self.round += 1
@@ -78,16 +87,18 @@ class CensormonGame(State):
                     self.input_field.focus()
                     actions["text_entry"] = ""
                     actions["next"] = False
+                    self.reveal = False
+
 
             # Wrong answer
             else:
                 self.prompt_text = f"Correct answer was " + \
-                    self.current_prompt.rstrip(".png").title()
+                    self.current_prompt.replace(".png","").title()
 
                 if actions["next"] or actions["enter"]:
                     self.next_button.hide()
                     self.skip_button.show()
-                    self.prompt_text = default_prompt_text
+                    self.prompt_text = self.default_prompt_text
 
                     self.round += 1
                     self.sprites.pop(self.current_prompt)
@@ -97,6 +108,8 @@ class CensormonGame(State):
                     self.input_field.focus()
                     actions["text_entry"] = ""
                     actions["next"] = False
+                    self.reveal = False
+                    
 
         # Skip button catch
         elif actions["skipping"]:
@@ -104,13 +117,14 @@ class CensormonGame(State):
             self.next_button.show()
             self.input_field.clear()
             self.input_field.disable()
-            self.prompt_text = f"Correct answer was " + \
-                self.current_prompt.rstrip(".png").title()
+            self.reveal = True
+            
+            self.prompt_text = f"Correct answer was " + self.current_prompt.replace(".png", "").title()
 
             if actions["next"] or actions["enter"]:
                 self.next_button.hide()
                 self.skip_button.show()
-                self.prompt_text = default_prompt_text
+                self.prompt_text = self.default_prompt_text
 
                 self.round += 1
                 self.sprites.pop(self.current_prompt)
@@ -121,6 +135,8 @@ class CensormonGame(State):
                 actions["text_entry"] = ""
                 actions["next"] = False
                 actions["skipping"] = False
+                self.reveal = False
+                
 
     def render(self, display):
         display.fill("#FFF6DE")
@@ -128,8 +144,12 @@ class CensormonGame(State):
         self.game.draw_text(display, self.prompt_text,
                             "black", self.game.GAME_W/2, self.game.GAME_H/4, self.game.header_font)
 
-        display.blit(self.sprites[self.current_prompt], (self.game.GAME_W/2 - self.sprites[self.current_prompt].get_width(
-        )/2, self.game.GAME_H/2 - self.sprites[self.current_prompt].get_height()/2))
+        if not self.reveal:
+            display.blit(self.sprites[self.current_prompt], (self.game.GAME_W/2 - self.sprites[self.current_prompt].get_width(
+            )/2, self.game.GAME_H/2 - self.sprites[self.current_prompt].get_height()/2))
+        else:
+            display.blit(self.correct_sprite[self.current_prompt], (self.game.GAME_W/2 - self.correct_sprite[self.current_prompt].get_width(
+            )/2, self.game.GAME_H/2 - self.correct_sprite[self.current_prompt].get_height()/2))
 
         ratio_text = f"{self.points} / {self.round}"
         self.game.draw_text(display, ratio_text,

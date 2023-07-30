@@ -4,7 +4,6 @@ from States.State import State
 from States.EggGame import EggGame
 from States.CensormonSettings import CensormonSettings
 
-
 class Title(State):
     def __init__(self, game):
         # print("Title init")
@@ -33,7 +32,7 @@ class Title(State):
                 new_state = EggGame(self.game)
                 new_state.enter_state()
             
-            # Start Censormon
+            # Start Censormon Settings
             elif actions["censor_start"]:
                 # Censor Game transition
                 actions["censor_start"] = False
@@ -43,6 +42,6 @@ class Title(State):
         self.game.reset_keys()
 
     def render(self, display):
-        display.fill(("#FFF6DE"))
+        display.fill("#FFF6DE")
         self.game.draw_text(display, "Poké Egg Guesser",
                             "black", self.game.GAME_W/2, self.game.GAME_H/2, self.game.title_font)

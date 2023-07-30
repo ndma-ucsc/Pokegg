@@ -19,8 +19,10 @@ class Game():
         self.screen = pygame.display.set_mode((self.SCREEN_W, self.SCREEN_H))
         self.UIManager = pygame_gui.UIManager((self.SCREEN_W, self.SCREEN_H))
         self.running, self.playing = True, True
-        self.actions = {"egg_start": False, "censor_start": False, "text_entry": "a", "skipping": False,
-                        "next": False, "next_field": False, "enter": False}
+        self.actions = {"egg_start": False, "censor_start": False,
+                        "text_entry": "a", "skipping": False, "next": False, "next_field": False,
+                        "easy_btn": False, "medium_btn": False, "hard_btn": False,
+                        "enter": False}
         self.dt, self.prev_time = 0, 0
         self.state_stack = []
         self.load_assets()
@@ -52,8 +54,6 @@ class Game():
 
             if event.type == pygame_gui.UI_BUTTON_PRESSED and event.ui_object_id == "egg_start_btn":
                 self.actions["egg_start"] = True
-            if event.type == pygame_gui.UI_BUTTON_PRESSED and event.ui_object_id == "censor_start_btn":
-                self.actions["censor_start"] = True
             if event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED and event.ui_object_id == "input_field":
                 self.actions["text_entry"] = re.sub(r'\W+', '', event.text)
             if event.type == pygame_gui.UI_BUTTON_PRESSED and event.ui_object_id == "skip_button":
@@ -62,6 +62,15 @@ class Game():
                 self.actions["next"] = True
             if event.type == pygame_gui.UI_TEXT_ENTRY_CHANGED and event.ui_object_id == "hidden_field":
                 self.actions["next_field"] = True
+
+            if event.type == pygame_gui.UI_BUTTON_PRESSED and event.ui_object_id == "censor_start_btn":
+                self.actions["censor_start"] = True
+            if event.type == pygame_gui.UI_BUTTON_PRESSED and event.ui_object_id == "easy_btn":
+                self.actions["easy_btn"] = True
+            if event.type == pygame_gui.UI_BUTTON_PRESSED and event.ui_object_id == "medium_btn":
+                self.actions["medium_btn"] = True
+            if event.type == pygame_gui.UI_BUTTON_PRESSED and event.ui_object_id == "hard_btn":
+                self.actions["hard_btn"] = True
 
             self.UIManager.process_events(event)
 
@@ -91,7 +100,8 @@ class Game():
     def load_assets(self):
         self.assets_dir = os.path.join("assets")
         self.egg_sprite_dir = os.path.join(self.assets_dir, "EggSprite")
-        self.pkmn_sprite_dir = os.path.join(self.assets_dir, "PkmnSprite")
+        self.pkmn_sprite_dir = os.path.join(
+            self.assets_dir, "PkmnSprite")
         self.font_dir = os.path.join(self.assets_dir, "Font")
         self.title_font = pygame.font.Font(
             os.path.join(self.font_dir, "PKMN RBYGSC.ttf"), 64)
@@ -103,6 +113,16 @@ class Game():
         self.themes_dir = os.path.join(self.assets_dir, "Themes")
         self.UIManager.get_theme().load_theme(
             os.path.join(self.themes_dir, "button.json"))
+
+        # Load sprites to dict
+        self.pkmn_sprites = {}
+
+        for sprite in os.listdir(self.pkmn_sprite_dir):
+            # self.pkmn_sprites["".join(sprite.split())] = pygame.image.load(
+            #     os.path.join(self.pkmn_sprite_dir, sprite))
+            self.pkmn_sprites["".join(sprite.split())] = pygame.transform.scale(pygame.image.load(
+                os.path.join(self.pkmn_sprite_dir, sprite)), (200, 200))
+
 
     def load_states(self):
 
